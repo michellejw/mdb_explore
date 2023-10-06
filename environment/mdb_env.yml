@@ -1,0 +1,13 @@
+name: mdb_env
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - pandas
+  - numpy
+  - pyyaml
+  - pymongo
+  - pymongoarrow
+  - dnspython
