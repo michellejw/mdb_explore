@@ -1,0 +1,14 @@
+entries_schema:
+  sgv: float
+  dateString: str
+
+treatment_schema:
+  duration: float
+  amount: float
+  absolute: float
+  timestamp: str
+  created_at: str
+  rate: float
+  temp: str
+  automatic: bool
+  eventType: str
