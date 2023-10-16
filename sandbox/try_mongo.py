@@ -28,7 +28,7 @@ secrets:
 """
 
 # Path to the yml secrets file
-yml_secrets_file = '../secrets/mdb_secrets.yml'
+yml_secrets_file = '../../secrets/mdb_secrets.yml'
 
 # Load the yml file and read the URI and database name
 with open(yml_secrets_file) as file:
