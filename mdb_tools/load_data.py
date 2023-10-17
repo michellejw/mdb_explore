@@ -57,3 +57,33 @@ def get_collections(yml_secrets_file):
     col_devicestatus = db["devicestatus"]
 
     return col_entries, col_treatments, col_profile, col_devicestatus
+
+
+def get_entries_df(col_entries0):
+    """
+    Using pyarrow, extract all of the documents in the entries collection and construct a Pandas dataframe from a subset of them.
+
+    Args:
+        col_entries0: A MongoDB collection containing information from the CGM (continuous glucose monitor).
+
+    Returns: a Pandas dataframe containing information from the entries collection
+
+    """
+    _, entries_schema, _, _ = mdb_schemas()
+
+    return col_entries0.find_pandas_all({}, schema=entries_schema)
+
+
+def get_treatments_df(col_treatments0):
+    """
+
+    Args:
+        col_treatments:
+
+    Returns:
+
+    """
+    treatment_schema, _, _, _ = mdb_schemas()
+
+    return col_treatments0.find_pandas_all({}, schema=treatment_schema)
+
