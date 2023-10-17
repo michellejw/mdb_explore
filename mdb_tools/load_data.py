@@ -17,41 +17,43 @@ pymongoarrow.monkey.patch_all()
 
 def get_collections(yml_secrets_file):
     """
-    Using the URI for the mongodb database, load a set of collections (the selection is currently
-    hard-coded
-    Args:
-        yml_secrets_file:
+    Using the URI for the mongodb database, load a set of collections (the selection is currently hard-coded
 
-    Returns:
+    Example usage:
+    col_entries, col_treatments, col_profile, col_device_status = ld.get_collections(yml_secrets_file)
+
+    Args:
+        yml_secrets_file (str): path to a yml file containing the URI and mongodB name.
+
+    Returns: A tuple containing a specific set of collections (basically, tables, from the mongo database: entries, treatments, profile, and device status, in that order.
 
     """
 
+    # Load the yml file and read the URI and database name
+    with open(yml_secrets_file) as file:
+        try:
+            mdb_secrets = yaml.safe_load(file)
+        except yaml.YAMLError as exc:
+            print(exc)
+    uri = mdb_secrets['secrets']['mongo_uri']
+    db_name = mdb_secrets['secrets']['mongo_db']
 
+    # Create a new client and connect to the server
+    client = MongoClient(uri, server_api=ServerApi('1'))
 
+    # Load the database
+    db = client[db_name]
 
-# Load the yml file and read the URI and database name
-with open(yml_secrets_file) as file:
-    try:
-        mdb_secrets = yaml.safe_load(file)
-    except yaml.YAMLError as exc:
-        print(exc)
-uri = mdb_secrets['secrets']['mongo_uri']
-db_name = mdb_secrets['secrets']['mongo_db']
+    # load the "entries" collection
+    col_entries = db["entries"]
 
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+    # load the "treatments" collection - this is the one that includes loop recordings of boluses, basal, etc
+    col_treatments = db["treatments"]
 
-# Load the database
-db = client[db_name]
+    # Load "profile" collection
+    col_profile = db["profile"]
 
-# load the "entries" collection
-col_entries = db["entries"]
+    # Load "devicestatus" collection
+    col_devicestatus = db["devicestatus"]
 
-# load the "treatments" collection - this is the one that includes loop recordings of boluses, basal, etc
-col_treatments = db["treatments"]
-
-# Load "profile" collection
-col_profile = db["profile"]
-
-# Load "devicestatus" collection
-col_devicestatus = db["devicestatus"]
+    return col_entries, col_treatments, col_profile, col_devicestatus
