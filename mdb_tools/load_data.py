@@ -8,8 +8,8 @@ import yaml
 # Pyarrow - importing mongo databases into pandas
 import pymongoarrow.monkey
 from mdb_tools.schemas import mdb_schemas
-import pyarrow as pa
-from pymongoarrow.api import Schema
+# import pyarrow as pa
+# from pymongoarrow.api import Schema
 
 # Add extra find_* methods to pymongo collection objects (pymongoarrow):
 pymongoarrow.monkey.patch_all()
@@ -76,14 +76,29 @@ def get_entries_df(col_entries0):
 
 def get_treatments_df(col_treatments0):
     """
+    Using pyarrow, extract all of the documents in the treatments collection and construct a Pandas dataframe from a subset of them.
 
     Args:
-        col_treatments:
+        col_treatments0: A MongoDB collection containing treatment information from the pump (boluses, temp basals, corrections, etc)
 
-    Returns:
+    Returns: a Pandas dataframe containing information from the treatments collection
 
     """
     treatment_schema, _, _, _ = mdb_schemas()
 
     return col_treatments0.find_pandas_all({}, schema=treatment_schema)
 
+
+def get_devicestatus_df(col_devicestatus0):
+    """
+    Using pyarrow, extract all of the documents in the devicestatus collection and construct a Pandas dataframe from a subset of them.
+
+    Args:
+        col_devicestatus0: A MongoDB collection containing status information from the pump.
+
+    Returns: a Pandas dataframe containing information from the device status collection
+
+    """
+    _, _, devicestatus_schema, _ = mdb_schemas()
+
+    return col_devicestatus0.find_pandas_all({}, schema=devicestatus_schema)
