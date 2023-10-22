@@ -5,6 +5,13 @@ import numpy as np
 
 
 def mdb_schemas():
+    """
+    Example usage:
+    entries_schema, treatments_schema, devicestatus_schema = mdb_schemas()
+
+    Returns: a tuple containing entries, treatments, and device status schemas
+
+    """
     entries_schema = Schema({
         'sgv': float,
         'dateString': str,
@@ -38,6 +45,6 @@ def mdb_schemas():
         }
     })
 
-    return treatments_schema, entries_schema, devicestatus_schema, profile_schema
+    return entries_schema, treatments_schema, devicestatus_schema
 
 
