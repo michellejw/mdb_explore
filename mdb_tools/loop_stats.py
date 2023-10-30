@@ -2,9 +2,7 @@
 
 A module for extracting and computing statistics for insulin or CGM data
 """
-
-
-# import numpy as np
+import numpy as np
 import pandas as pd
 
 
@@ -107,3 +105,52 @@ def get_last_doc(col):
     Get the last/most recent document in the collection
     """
     return [prof for prof in col.find().skip(col.estimated_document_count() - 1)][0]
+
+
+def daily_cgm_stats(time_vec, cgm_data, min_target=70, max_target=180):
+    """
+    Compute some general statistics per day including percent above, percent below, and percent in range.
+
+    Args:
+        time_vec (array-like): array or list or series of times
+        cgm_data (array-like): array or list or series of CGM values at each point in time_vec. Must be same length as time_vec
+        min_target (num, Optional): minimum blood glucose target in mg/dL, default is 70
+        max_target (num, Optional): maximum blood glucose target in mg/dL, default is 180
+
+    Returns: pandas dataframe containing daily statistics
+
+    """
+    yeardays = get_yeardays(time_vec)
+    df_cgm_data = pd.DataFrame(np.transpose([time_vec, yeardays, cgm_data]), columns=["time", "yearday", "bg"])
+
+    # COMPUTE STATS PER DAY
+    df_cgm_daily = df_cgm_data[["bg", "yearday"]].groupby("yearday").describe()["bg"]
+    df_cgm_daily["yearday"] = df_cgm_daily.index
+    df_cgm_daily["time"] = pd.to_datetime(df_cgm_daily['yearday'], format='%Y-%j')
+
+    unique_days = df_cgm_daily["yearday"].tolist()
+
+    # Initialize lists
+    pct_above = []
+    pct_below = []
+    pct_inrange = []
+
+    # loop through each day (I'm sure there's a fancy way to do this with Pandas but I
+    # can't figure it out...)
+    for day in unique_days:
+        df_sub = df_cgm_data[df_cgm_data["yearday"] == day]
+        this_total = len(df_sub)
+        if this_total > 0:
+            pct_above.append(sum(df_sub["bg"] > max_target) / this_total * 100)
+            pct_below.append(sum(df_sub["bg"] <= min_target) / this_total * 100)
+            pct_inrange.append(sum((df_sub["bg"] > min_target) & (df_sub["bg"] <= max_target)) / this_total * 100)
+        else:
+            pct_above.append(0)
+            pct_below.append(0)
+            pct_inrange.append(0)
+
+    df_cgm_daily["pct_above"] = pct_above
+    df_cgm_daily["pct_below"] = pct_below
+    df_cgm_daily["pct_inrange"] = pct_inrange
+
+    return df_cgm_daily.drop(['count', 'unique', 'top', 'freq'], axis='columns')
