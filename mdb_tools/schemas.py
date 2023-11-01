@@ -15,6 +15,8 @@ def mdb_schemas():
     entries_schema = Schema({
         'sgv': float,
         'dateString': str,
+        'date': int,
+        'device': str,
     })
 
     treatments_schema = Schema({
