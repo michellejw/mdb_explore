@@ -44,8 +44,8 @@ def get_setting_at_times(in_times, col_prof, req_setting="carbratio", req_profil
     # Convert requested input times to unix
     in_times_unix = in_times.view('int64')
 
-    # Compute seconds elapsed in current day (to get at the current carb ratio)
-    seconds_in_day = in_times.dt.hour * 3600 + in_times.dt.minute * 60 + in_times.dt.second
+    # # Compute seconds elapsed in current day (to get at the current carb ratio)
+    # seconds_in_day = in_times.dt.hour * 3600 + in_times.dt.minute * 60 + in_times.dt.second
 
     # ##### Prep profile documents #####
 
@@ -61,8 +61,8 @@ def get_setting_at_times(in_times, col_prof, req_setting="carbratio", req_profil
     # Pull out all the keys for each "store"
     store_keys = [x.keys() for x in all_store]
 
-    # Extract the "store" info for each document, for any available profiles
-    all_store_vals = [[doc[key] for key in store_keys[doc_num]] for doc_num, doc in enumerate(all_store)]
+    # # Extract the "store" info for each document, for any available profiles
+    # all_store_vals = [[doc[key] for key in store_keys[doc_num]] for doc_num, doc in enumerate(all_store)]
 
     # Extract the profile names for each document
     all_store_profiles = [[key for key in store_keys[doc_num]] for doc_num, doc in enumerate(all_store)]
@@ -95,7 +95,7 @@ def get_setting_at_times(in_times, col_prof, req_setting="carbratio", req_profil
 
         t_diff = [this_req_time - t for t in times]
 
-        val_req.append([crs[idx] for idx, x in enumerate(t_diff) if x > 0][-1])
+        val_req.append([crs[idx] for idx, x in enumerate(t_diff) if x >= 0][-1])
 
     return val_req
 

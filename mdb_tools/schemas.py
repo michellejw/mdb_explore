@@ -44,6 +44,9 @@ def mdb_schemas():
             'automaticDoseRecommendation': {'bolusVolume': float},
             'cob': float,
             'iob': {'iob': float}
+        },
+        'pump': {
+            'reservoir_display_override': str,
         }
     })
 
