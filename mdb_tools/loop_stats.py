@@ -28,7 +28,7 @@ def get_setting_at_times(in_times, col_prof, req_setting="carbratio", req_profil
     A function that returns the requested profile setting from a profile collection at requested times
 
     Args:
-        in_time (array-like): An array of input / requested times in pandas datetime format
+        in_times (array-like): An array of input / requested times in pandas datetime format
         col_prof (mongodb collection): profile collection that includes the carb ratios
         req_setting (str): requested profile setting. Can be "carbratio", "sens", or "basal"
         req_profile (str): requested profile name. Default is "Default".
